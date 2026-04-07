@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Simulation Comparison</title>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.134/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <link rel="stylesheet" href="src/css/styles.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</head>
+<body>
+
+<div id="captureArea">
+
+  <div id="cesiumContainer"></div>
+    
+
+	<div id="infoBox">
+	  <div id="infoBoxHeader">
+		<span id="infoBoxTitle">Building Metadata</span>
+		<span id="infoBoxClose">×</span>
+	  </div>
+	  <div id="infoBoxContent"></div>
+	</div>
+
+  
+  <!-- SHARE + SAVE BUTTONS -->
+  <div id="extraButtons">
+       
+    <button id="saveBtn" class="cesium-button cesium-toolbar-button">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+        <path d="M20 5h-3.17l-1.83-2H9L7.17 5H4c-1.1 
+                 0-2 .9-2 2v11c0 1.1.9 2 2 
+                 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-8 
+                 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 
+                 2.24 5 5-2.24 5-5 5z"/>
+      </svg>
+    </button>
+
+    <button id="shareBtn" class="cesium-button cesium-toolbar-button">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 
+                 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.02-4.11c.54.5 
+                 1.25.81 2.07.81 1.66 0 3-1.34 
+                 3-3s-1.34-3-3-3-3 1.34-3 
+                 3c0 .24.04.47.09.7L8.07 
+                 9.81c-.54-.5-1.25-.81-2-.81-1.66 
+                 0-3 1.34-3 3s1.34 3 3 
+                 3c.75 0 1.46-.31 2-.81l7.12 
+                 4.18c-.05.21-.09.43-.09.66 0 
+                 1.61 1.31 2.92 2.92 2.92 1.61 
+                 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+      </svg>
+    </button>
+	<button id="zoomInBtn" class="cesium-button cesium-toolbar-button">
+	  <svg viewBox="0 0 24 24" fill="white">
+		<path d="M12 5v14m-7-7h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+	  </svg>
+	</button>
+
+	<button id="zoomOutBtn" class="cesium-button cesium-toolbar-button">
+	  <svg viewBox="0 0 24 24" fill="white">
+		<path d="M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+	  </svg>
+	</button>
+  </div>
+
+  <div id="controls">
+
+    <!-- BUILDINGS  -->
+    <div class="collapsible-container">
+      <div class="collapsible-header">
+        <span>Buildings</span>
+        <span class="collapsible-icon">−</span>
+      </div>	
+      <div class="collapsible-content">
+        <div class="layer-row">
+          <label><input type="checkbox" id="existingBuildings" checked> Existing</label>
+        </div>
+        <div class="layer-row">
+          <label><input type="checkbox" id="plannedBuildings" checked> Planned</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULATION TYPES EXAMPLES-->
+    <div class="collapsible-container">
+      <div class="collapsible-header">
+        <span>Simulation Types</span>
+        <span class="collapsible-icon">−</span>
+      </div>
+      <div class="collapsible-content">
+        <div class="layer-row">
+		  <label><input type="checkbox" id="simOA"> Obstruction Angle</label>
+		  <span class="filter-icon disabled" id="filterOA" title="Filter OA">
+			  <svg viewBox="0 0 24 24" width="16" height="16" fill="#777">
+				<path d="M3 4h18l-6.5 7.5v6l-5 2v-8.1L3 4z"/>
+			  </svg>
+		  </span>
+		</div>
+
+		<div class="layer-row">
+		  <label><input type="checkbox" id="simDSH"> Direct Sunlight Hours</label>
+		  <span class="filter-icon disabled" id="filterDSH" title="Filter DSH">
+			  <svg viewBox="0 0 24 24" width="16" height="16" fill="#777">
+				<path d="M3 4h18l-6.5 7.5v6l-5 2v-8.1L3 4z"/>
+			  </svg>
+		</span>
+		</div>
+        <div class="layer-row">
+          <label><input type="checkbox" id="simIRRAD"> Solar Irradiance</label>
+        </div>
+        <div class="layer-row">
+		  <label><input type="checkbox" id="simNOISE"> Noise</label>
+		  <span class="filter-icon disabled" id="filterNOISE" title="Filter Noise">
+			  <svg viewBox="0 0 24 24" width="16" height="16" fill="#777">
+				<path d="M3 4h18l-6.5 7.5v6l-5 2v-8.1L3 4z"/>
+			  </svg>
+			</span>
+
+		</div>
+		<div class="layer-row">
+          <label><input type="checkbox" id="simWIND"> Wind</label>
+        </div>
+        <div class="layer-row">
+          <label><input type="checkbox" id="simFLOOD"> Flood</label>
+        </div>
+        
+        <div id="floodTimeRow" class="layer-row" style="display:none;">
+          <label style="width:100%;">
+            Flood Time:
+            <select id="floodTimeSelector" class="dropdown">
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">60 min</option>
+            </select>
+          </label>
+        </div>
+			<div id="floodSliderRow" class="layer-row" style="display:none; flex-direction:column;">
+			  <label>Flood Time (Slider):</label>
+			  <input id="floodSlider" type="range" min="30" max="60" step="1" value="30"
+					 style="width:100%; margin-top:4px;">
+			  <div id="floodSliderValue" style="text-align:center; margin-top:4px; font-size:12px;">
+				30 min
+			  </div>
+</div>
+
+      </div>
+    </div>
+
+
+    <!-- SCENARIOS -->
+    <div class="collapsible-container">
+      <div class="collapsible-header">
+        <span>Scenario</span>
+        <span class="collapsible-icon">−</span>
+      </div>
+      <div class="collapsible-content">
+        <div class="layer-row">
+          <label><input type="checkbox" id="simBefore"> Before</label>
+        </div>
+        <div class="layer-row">
+          <label><input type="checkbox" id="simAfter"> After</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARISON MODE -->
+    <div class="collapsible-container">
+      <div class="collapsible-header">
+        <span>Comparison Mode</span>
+        <span class="collapsible-icon">−</span>
+      </div>
+      <div class="collapsible-content">
+        <select id="compareModeSelector" class="dropdown">
+          <option value="" selected disabled>— Select Comparison —</option>
+          <option value="scenario">Compare Scenarios</option>
+          <option value="simulation">Compare Simulations</option>
+          <option value="single" style="display:none"></option>
+        </select>
+        <button id="backToSingleBtn" class="back-btn" style="display:none">
+          Back to Single View
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split controls -->
+  <div id="slider"></div>
+
+  <div id="movingLabels">
+    <div id="leftLabel" class="moving-label"></div>
+    <div id="rightLabel" class="moving-label"></div>
+  </div>
+  
+  <!-- Legends examples -->
+  <div id="legend-container">
+    <div id="legend-oa" class="legend-box" style="display:none;">
+      <div class="legend-title">Obstruction Angle (°)</div>
+      <div class="legend-gradient-oa"></div>
+
+
+      <div class="legend-labels">
+        <span>0</span><span>5</span><span>10</span><span>20</span><span>>30</span>
+      </div>
+	  <div class="legend-note">Acceptable if OA &lt; 30° </div>
+    </div>
+
+    <div id="legend-dsh" class="legend-box" style="display:none;">
+      <div class="legend-title">Direct Sunlight Hours</div>
+      <div class="legend-gradient-dsh"></div>
+
+      <div class="legend-labels">
+        <span>0</span><span>2.5</span><span>5</span><span>7.5</span><span>>10</span>
+      </div>
+	  <div class="legend-note">Acceptable if DSH &gt; 1.5 hours </div>
+    </div>
+  
+	<div id="legend-irrad" class="legend-box" style="display:none;">
+	  <div class="legend-title">Solar Irradiance (kWh/m²)</div>
+	  <div class="legend-gradient-irrad"></div>
+	  <div class="legend-labels">
+		<span>Low</span><span>Medium</span><span>High</span><span>Very High</span>
+	  </div>
+	</div>
+
+	<div id="legend-noise" class="legend-box" style="display:none;">
+	  <div class="legend-title">Noise (dB)</div>
+	  <div class="legend-gradient-noise"></div>
+	  <div class="legend-labels">
+		<span>0</span><span>30</span><span>40</span><span>50</span><span>60</span><span>>70</span>
+	  </div>
+	  <div class="legend-note">Acceptable if Noise &lt; 53 dB </div>
+	</div>
+
+	<div id="legend-wind" class="legend-box" style="display:none;">
+	  <div class="legend-title">Wind Comfort Index</div>
+	  <div class="legend-gradient-wind"></div>
+	  <div class="legend-labels">
+		<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+	  </div>
+	  <div class="legend-note">0 = Acceptable · 5 = Intolerable</div>
+	</div>
+
+	<div id="legend-flood" class="legend-box" style="display:none;">
+	  <div class="legend-title">Flood Depth (m)</div>
+	  <div class="legend-gradient-flood"></div>
+	  <div class="legend-labels">
+		<span>0</span><span>0,10</span><span>0,20</span><span>>0,30</span>
+	  </div>
+	</div>
+</div>
+  <div id="valueFilterPanel">
+    <div id="valueFilterPanelHeader">
+      <span id="valueFilterTitle">Filter Values</span>
+      <span id="valueFilterPanelClose">×</span>
+    </div>
+
+    <div class="value-filter-row">
+      <label>Operator:</label>
+      <select id="filterOperator" class="dropdown">
+        <option value=">">></option>
+        <option value=">=">>=</option>
+        <option value="<"><</option>
+        <option value="<="><=</option>
+        <option value="=">=</option>
+        <option value="between">Between</option>
+      </select>
+    </div>
+
+    <div class="value-filter-row">
+      <label>Value:</label>
+      <input id="filterValue1" type="number" step="0.1" value="0">
+    </div>
+
+    <div class="value-filter-row" id="filterValue2Row" style="display:none;">
+      <label>and:</label>
+      <input id="filterValue2" type="number" step="0.1" value="10">
+    </div>
+
+    <button id="applyFilterBtn" class="meta-btn" style="margin-top:6px;">
+      Apply Filter
+    </button>
+
+    <button id="clearFilterBtn" class="meta-btn" style="background:#666;margin-top:5px;">
+      Clear Filter
+    </button>
+  </div>
+
+</div>
+
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.134/Build/Cesium/Cesium.js"></script>
+  <script>
+  Cesium.Ion.defaultAccessToken = "YOUR_CESIUM_ION_TOKEN";
+
+  const viewer = new Cesium.Viewer("cesiumContainer", {
+    sceneModePicker: false,
+    timeline: false,
+    animation: false,
+    requestRenderMode: true,
+	geocoder: false,
+	contextOptions: {
+        webgl: {
+            preserveDrawingBuffer: true
+        }
+    }
+});
+
+	viewer.imageryLayers.addImageryProvider(
+	  new Cesium.UrlTemplateImageryProvider({
+		url: "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?api_key=f789d36e-d06c-4758-a92f-f6b3fc002d72",
+		credit: "© Stadia Maps"
+	  })
+	);
+
+
+  // --- UI elements ---
+  const compareModeSelector = document.getElementById("compareModeSelector");
+  const beforeCB = document.getElementById("simBefore");
+  const afterCB  = document.getElementById("simAfter");
+  const sliderEl = document.getElementById("slider");
+  const leftLabel  = document.getElementById("leftLabel");
+  const rightLabel = document.getElementById("rightLabel");
+  compareModeSelector.value = "single";
+
+  // --- Tilesets ---
+  let existingTileset, plannedTileset;
+  let windowsOA1Tileset, windowsOA2Tileset;
+  let windowsDSH1Tileset, windowsDSH2Tileset;
+  let irrad1Tileset, irrad2Tileset;
+  let noise1Tileset, noise2Tileset;
+  let wind1Tileset, wind2Tileset;
+  let flood130Tileset, flood145Tileset, flood160Tileset;
+  let flood230Tileset, flood245Tileset, flood260Tileset;
+
+  // --- State ---
+  let simBefore = true;
+  let simAfter  = false;
+
+  let activeOA = false;
+  let activeDSH = false;
+  let activeIRRAD = false;
+  let activeNOISE = false;
+  let activeWIND = false;
+  let activeFLOOD = false;
+  let floodTime = "30";
+ 
+  let selectedSimulations = []; 
+
+  let valueFilterActive   = false;
+  let valueFilterOperator = null;   
+  let valueFilterV1       = null;
+  let valueFilterV2       = null;
+  
+  let filterTarget = null; 
+
+  viewer.scene.globe.translucency.enabled = true;
+  
+  /* -------------------------------------------------
+     INIT
+  -------------------------------------------------*/
+  (async function init() {
+   // --- Use same asset ID for both scenarios  ---
+    existingTileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    plannedTileset  = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID"); 
+	 
+
+    windowsOA1Tileset  = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    windowsOA2Tileset  = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+
+    windowsDSH1Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    windowsDSH2Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+
+    irrad1Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    irrad2Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+	
+    noise1Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    noise2Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+	
+	wind1Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    wind2Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+	
+    flood130Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    flood145Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    flood160Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+	
+    flood230Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    flood245Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+    flood260Tileset = await Cesium.Cesium3DTileset.fromIonAssetId("YOUR_3D_TILESET_ASSET_ID");
+	
+    viewer.scene.primitives.add(existingTileset);
+    viewer.scene.primitives.add(plannedTileset);
+    viewer.scene.primitives.add(windowsOA1Tileset);
+    viewer.scene.primitives.add(windowsOA2Tileset);
+    viewer.scene.primitives.add(windowsDSH1Tileset);
+    viewer.scene.primitives.add(windowsDSH2Tileset);
+    viewer.scene.primitives.add(irrad1Tileset);
+    viewer.scene.primitives.add(irrad2Tileset);
+    viewer.scene.primitives.add(noise1Tileset);
+    viewer.scene.primitives.add(noise2Tileset);
+	viewer.scene.primitives.add(wind1Tileset);
+    viewer.scene.primitives.add(wind2Tileset);
+    viewer.scene.primitives.add(flood130Tileset);
+    viewer.scene.primitives.add(flood145Tileset);
+    viewer.scene.primitives.add(flood160Tileset);
+    viewer.scene.primitives.add(flood230Tileset);
+    viewer.scene.primitives.add(flood245Tileset);
+    viewer.scene.primitives.add(flood260Tileset);
+	
+    await Promise.all([
+      existingTileset.readyPromise,
+      plannedTileset.readyPromise,
+      windowsOA1Tileset.readyPromise,
+      windowsOA2Tileset.readyPromise,
+      windowsDSH1Tileset.readyPromise,
+      windowsDSH2Tileset.readyPromise,
+      irrad1Tileset.readyPromise,
+      irrad2Tileset.readyPromise,
+      noise1Tileset.readyPromise,
+      noise2Tileset.readyPromise,
+	  wind1Tileset.readyPromise,
+      wind2Tileset.readyPromise,
+      flood130Tileset.readyPromise,
+      flood145Tileset.readyPromise,
+      flood160Tileset.readyPromise,
+      flood230Tileset.readyPromise,
+      flood245Tileset.readyPromise,
+      flood260Tileset.readyPromise
+    ]);
+
+    viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function (e) {
+      e.cancel = true;
+      viewer.zoomTo(existingTileset);
+    });
+	
+    const unlitShader = new Cesium.CustomShader({
+      lightingModel: Cesium.LightingModel.UNLIT
+    });
+
+    windowsOA1Tileset.customShader  = unlitShader;
+    windowsOA2Tileset.customShader  = unlitShader;
+    windowsDSH1Tileset.customShader = unlitShader;
+    windowsDSH2Tileset.customShader = unlitShader;
+	existingTileset.customShader = unlitShader;
+	plannedTileset.customShader = unlitShader;
+	irrad1Tileset.customShader = unlitShader;
+    irrad2Tileset.customShader = unlitShader;
+    noise1Tileset.customShader = unlitShader;
+    noise2Tileset.customShader = unlitShader;
+	flood130Tileset.customShader = unlitShader;
+	flood145Tileset.customShader = unlitShader;
+	flood160Tileset.customShader = unlitShader;
+	flood230Tileset.customShader = unlitShader;
+	flood245Tileset.customShader = unlitShader;
+	flood260Tileset.customShader = unlitShader;
+	wind1Tileset.customShader = unlitShader;
+	wind2Tileset.customShader = unlitShader;
+	
+	
+	viewer.shadows = false;
+
+    const translation = Cesium.Cartesian3.fromArray([-10, -5, -15]);
+    [
+      existingTileset,
+      plannedTileset,
+      windowsOA1Tileset, windowsOA2Tileset,
+      windowsDSH1Tileset, windowsDSH2Tileset,
+      irrad1Tileset, irrad2Tileset,
+      noise1Tileset, noise2Tileset,
+    ].forEach(ts => {
+      ts.modelMatrix = Cesium.Matrix4.multiplyByTranslation(
+        ts.modelMatrix,
+        translation,
+        new Cesium.Matrix4()
+      );
+    });
+	
+	  const translation2 = Cesium.Cartesian3.fromArray([-10, -5, -17]);
+    [
+      wind1Tileset, wind2Tileset,
+      flood130Tileset, flood145Tileset, flood160Tileset,
+      flood230Tileset, flood245Tileset, flood260Tileset,
+    ].forEach(ts => {
+      ts.modelMatrix = Cesium.Matrix4.multiplyByTranslation(
+        ts.modelMatrix,
+        translation2,
+        new Cesium.Matrix4()
+      );
+    });
+
+    windowsOA1Tileset.show = false;
+    windowsOA2Tileset.show = false;
+    windowsDSH1Tileset.show = false;
+    windowsDSH2Tileset.show = false;
+    irrad1Tileset.show      = false;
+    irrad2Tileset.show      = false;
+    noise1Tileset.show      = false;
+    noise2Tileset.show      = false;
+	wind1Tileset.show      = false;
+    wind2Tileset.show      = false;
+    flood130Tileset.show    = false;
+    flood145Tileset.show    = false;
+    flood160Tileset.show    = false;
+    flood230Tileset.show    = false;
+    flood245Tileset.show    = false;
+    flood260Tileset.show    = false;
+
+    [
+      windowsOA1Tileset, windowsOA2Tileset,
+      windowsDSH1Tileset, windowsDSH2Tileset,
+      irrad1Tileset, irrad2Tileset,
+      noise1Tileset, noise2Tileset,
+	  wind1Tileset, wind1Tileset,
+      flood130Tileset, flood145Tileset, flood160Tileset,
+      flood230Tileset, flood245Tileset, flood260Tileset,
+    ].forEach(ts => {
+      ts.maximumScreenSpaceError = 1.0;
+      ts.cullRequestsWhileMoving = false;
+    });
+
+    updateStyles();
+    updateSimulationVisibility();
+    updateComparisonMode();
+    viewer.zoomTo(existingTileset);
+	updateFilterButtonState();
+
+  })();
+
+
+  /* -------------------------------------------------
+     FILTER
+  -------------------------------------------------*/
+  function getValueFilterExpression() {
+    if (!valueFilterActive || !valueFilterOperator || valueFilterV1 === null) {
+      return null; 
+    }
+
+    const op = valueFilterOperator;
+    const v1 = valueFilterV1;
+    const v2 = valueFilterV2;
+
+    switch (op) {
+      case ">":
+        return "(${Value} > " + v1 + ")";
+      case ">=":
+        return "(${Value} >= " + v1 + ")";
+      case "<":
+        return "(${Value} < " + v1 + ")";
+      case "<=":
+        return "(${Value} <= " + v1 + ")";
+      case "=":
+        return "(${Value} == " + v1 + ")";
+      case "between": {
+        if (v2 === null) return null;
+        const min = Math.min(v1, v2);
+        const max = Math.max(v1, v2);
+        return "(${Value} >= " + min + " && ${Value} <= " + max + ")";
+      }
+      default:
+        return null;
+    }
+  }
+
+    /* -------------------------------------------------
+     STYLES + LEGENDS EXAMPLES
+  -------------------------------------------------*/
+  function updateStyles() {
+    if (!windowsOA1Tileset) return;
+
+    const valExpr = getValueFilterExpression(); 
+
+    function combineShow(baseShow) {
+      if (valExpr) {
+        return baseShow + " && " + valExpr;
+      }
+      return baseShow;
+    }
+
+    // OA
+    windowsOA1Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "OA")
+        ? combineShow("(${window_id_1} !== undefined)")
+        : "(${window_id_1} !== undefined)"
+    });
+    windowsOA2Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "OA")
+        ? combineShow("(${window_id_2} !== undefined)")
+        : "(${window_id_2} !== undefined)"
+    });
+
+    // DSH
+    windowsDSH1Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "DSH")
+        ? combineShow("(${_fonster_DSH_1} !== undefined)")
+        : "(${_fonster_DSH_1} !== undefined)"
+    });
+		
+    windowsDSH2Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "DSH")
+        ? combineShow("(${_fonster_DSH_2} !== undefined)")
+        : "(${_fonster_DSH_2} !== undefined)"
+    });
+
+    // IRRADIANCE 
+    irrad1Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_irrad_id_1} !== undefined)"
+    });
+    irrad2Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_irrad_id_2} !== undefined)"
+    });
+    
+    // NOISE 
+    noise1Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "NOISE")
+        ? combineShow("(${_noise_id_1} !== undefined)")
+        : "(${_noise_id_1} !== undefined)"
+    });
+    noise2Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: (filterTarget === "NOISE")
+        ? combineShow("(${_noise_id_2} !== undefined)")
+        : "(${_noise_id_2} !== undefined)"
+    });
+    
+    // WIND 
+    wind1Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_wind_id_1} !== undefined)"
+    });
+    wind2Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_wind_id_2} !== undefined)"
+    });
+
+    // FLOOD 
+    flood130Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_30_1} !== undefined)"
+    });
+    flood145Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_45_1} !== undefined)"
+    });
+    flood160Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_60_1} !== undefined)"
+    });
+    flood230Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_30_2} !== undefined)"
+    });
+    flood245Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_45_2} !== undefined)"
+    });
+    flood260Tileset.style = new Cesium.Cesium3DTileStyle({
+      show: "(${_flood_id_60_2} !== undefined)"
+    });
+
+ 
+    const oaActive  = windowsOA1Tileset.show || windowsOA2Tileset.show;
+    const dshActive = windowsDSH1Tileset.show || windowsDSH2Tileset.show;
+    const irradActive = irrad1Tileset.show || irrad2Tileset.show;
+    const noiseActive = noise1Tileset.show || noise2Tileset.show;
+    const windActive  = wind1Tileset.show  || wind2Tileset.show;
+
+    const floodActive = flood130Tileset.show ||
+                        flood145Tileset.show ||
+                        flood160Tileset.show ||
+                        flood230Tileset.show ||
+                        flood245Tileset.show ||
+                        flood260Tileset.show;
+
+    document.getElementById("legend-oa").style.display  = oaActive  ? "block" : "none";
+    document.getElementById("legend-dsh").style.display = dshActive ? "block" : "none";
+    document.getElementById("legend-irrad").style.display = irradActive ? "block" : "none";
+    document.getElementById("legend-noise").style.display = noiseActive ? "block" : "none";
+    document.getElementById("legend-wind").style.display  = windActive  ? "block" : "none";
+    document.getElementById("legend-flood").style.display = floodActive ? "block" : "none";
+
+    viewer.scene.requestRender();
+  }
+
+
+  /* -------------------------------------------------
+     SIMULATION VISIBILITY 
+  -------------------------------------------------*/
+  function updateSimulationVisibility() {
+    if (!windowsOA1Tileset) return;
+
+    const mode = compareModeSelector.value || "single";
+
+    // ----- OA / DSH / IRRAD / NOISE -----
+    if (mode === "simulation") {
+
+	  windowsOA1Tileset.show  = activeOA && simBefore;
+	  windowsOA2Tileset.show  = activeOA && simAfter;
+
+	  windowsDSH1Tileset.show = activeDSH && simBefore;
+	  windowsDSH2Tileset.show = activeDSH && simAfter;
+
+	  irrad1Tileset.show      = activeIRRAD && simBefore;
+	  irrad2Tileset.show      = activeIRRAD && simAfter;
+
+	  noise1Tileset.show      = activeNOISE && simBefore;
+	  noise2Tileset.show      = activeNOISE && simAfter;
+
+	  wind1Tileset.show       = activeWIND && simBefore;
+	  wind2Tileset.show       = activeWIND && simAfter;
+
+    } else {
+
+      windowsOA1Tileset.show  = activeOA && simBefore;
+      windowsOA2Tileset.show  = activeOA && simAfter;
+      windowsDSH1Tileset.show = activeDSH && simBefore;
+      windowsDSH2Tileset.show = activeDSH && simAfter;
+      irrad1Tileset.show      = activeIRRAD && simBefore;
+      irrad2Tileset.show      = activeIRRAD && simAfter;
+      noise1Tileset.show      = activeNOISE && simBefore;
+      noise2Tileset.show      = activeNOISE && simAfter;
+	  wind1Tileset.show      = activeWIND && simBefore;
+      wind2Tileset.show      = activeWIND && simAfter;
+    }
+
+    // ----- FLOOD -----
+    [
+      flood130Tileset, flood145Tileset, flood160Tileset,
+      flood230Tileset, flood245Tileset, flood260Tileset
+    ].forEach(ts => { if (ts) ts.show = false; });
+
+    if (activeFLOOD) {
+
+	  // BEFORE
+	  if (simBefore) {
+		if (floodTime === "30") flood130Tileset.show = true;
+		if (floodTime === "45") flood145Tileset.show = true;
+		if (floodTime === "60") flood160Tileset.show = true;
+	  }
+
+	  // AFTER
+	  if (simAfter) {
+		if (floodTime === "30") flood230Tileset.show = true;
+		if (floodTime === "45") flood245Tileset.show = true;
+		if (floodTime === "60") flood260Tileset.show = true;
+	  }
+	}	
+
+    updateStyles();
+  }
+
+  /* -------------------------------------------------
+     BEFORE / AFTER CHECKBOXES
+  -------------------------------------------------*/
+  beforeCB.addEventListener("change", () => {
+    const mode = compareModeSelector.value || "single";
+
+    if (mode === "scenario") {
+   
+      beforeCB.checked = true;
+      afterCB.checked  = true;
+      simBefore = true;
+      simAfter  = true;
+    } else {
+
+      if (beforeCB.checked) {
+        simBefore = true;
+        simAfter  = false;
+        afterCB.checked = false;
+      } else {
+       
+        beforeCB.checked = true;
+        return;
+      }
+    }
+
+    updateSimulationVisibility();
+    updateComparisonMode();
+  });
+
+  afterCB.addEventListener("change", () => {
+    const mode = compareModeSelector.value || "single";
+
+    if (mode === "scenario") {
+      beforeCB.checked = true;
+      afterCB.checked  = true;
+      simBefore = true;
+      simAfter  = true;
+    } else {
+      if (afterCB.checked) {
+        simAfter  = true;
+        simBefore = false;
+        beforeCB.checked = false;
+      } else {
+        afterCB.checked = true;
+        return;
+      }
+    }
+
+    updateSimulationVisibility();
+    updateComparisonMode();
+  });
+
+
+  /* -------------------------------------------------
+     BUILDINGS TOGGLES
+  -------------------------------------------------*/
+  document.getElementById("existingBuildings").addEventListener("change", e => {
+    if (!existingTileset) return;
+    existingTileset.show = e.target.checked;
+    viewer.scene.requestRender();
+  });
+
+  document.getElementById("plannedBuildings").addEventListener("change", e => {
+    if (!plannedTileset) return;
+    plannedTileset.show = e.target.checked;
+    viewer.scene.requestRender();
+  });
+
+
+  /* -------------------------------------------------
+     SIMULATION TYPE TOGGLES (OA / DSH / IRRAD / NOISE / FLOOD)
+  -------------------------------------------------*/
+  function handleSimulationSelection(simName, isChecked) {
+    const mode = compareModeSelector.value || "single";
+	
+	if (isChecked && mode === "single"){
+		beforeCB.checked = true;
+		afterCB.checked = false;
+		simBefore = true;
+		simAfter = false;
+	}
+    
+    activeOA    = document.getElementById("simOA").checked;
+    activeDSH   = document.getElementById("simDSH").checked;
+    activeIRRAD = document.getElementById("simIRRAD").checked;
+    activeNOISE = document.getElementById("simNOISE").checked;
+	activeWIND = document.getElementById("simWIND").checked;
+    activeFLOOD = document.getElementById("simFLOOD").checked;
+
+    if (mode === "simulation") {
+      
+      if (isChecked) {
+        selectedSimulations.push(simName);
+
+        if (selectedSimulations.length > 2) {
+          const removed = selectedSimulations.shift();
+          const checkboxId = "sim" + removed;
+          const cb = document.getElementById(checkboxId);
+          if (cb) cb.checked = false;
+
+          if (removed === "OA")    activeOA = false;
+          if (removed === "DSH")   activeDSH = false;
+          if (removed === "IRRAD") activeIRRAD = false;
+          if (removed === "NOISE") activeNOISE = false;
+		  if (removed === "WIND") activeWIND = false;
+          if (removed === "FLOOD") {
+            activeFLOOD = false;
+            document.getElementById("floodTimeRow").style.display = "none";
+          }
+        }
+      } else {
+        selectedSimulations = selectedSimulations.filter(s => s !== simName);
+      }
+    } else {
+      
+      selectedSimulations = [];
+      if (activeOA)    selectedSimulations.push("OA");
+      if (activeDSH)   selectedSimulations.push("DSH");
+      if (activeIRRAD) selectedSimulations.push("IRRAD");
+      if (activeNOISE) selectedSimulations.push("NOISE");
+	  if (activeWIND) selectedSimulations.push("WIND");
+      if (activeFLOOD) selectedSimulations.push("FLOOD");
+    }
+
+    updateSimulationVisibility();
+    updateComparisonMode();
+  }
+
+  document.getElementById("simOA").addEventListener("change", e => {
+	  handleSimulationSelection("OA", e.target.checked);
+	  updateFilterButtonState();
+	  closeFilterIfTargetUnchecked();
+	});
+  document.getElementById("simDSH").addEventListener("change", e => {
+    handleSimulationSelection("DSH", e.target.checked);
+    updateFilterButtonState();
+	closeFilterIfTargetUnchecked();
+  });
+  document.getElementById("simIRRAD").addEventListener("change", e =>
+    handleSimulationSelection("IRRAD", e.target.checked)
+  );
+  document.getElementById("simNOISE").addEventListener("change", e => {
+    handleSimulationSelection("NOISE", e.target.checked);
+    updateFilterButtonState();
+	closeFilterIfTargetUnchecked();
+  });
+  document.getElementById("simWIND").addEventListener("change", e =>
+    handleSimulationSelection("WIND", e.target.checked)
+  );
+
+  document.getElementById("simFLOOD").addEventListener("change", e => {
+    activeFLOOD = e.target.checked;
+    document.getElementById("floodTimeRow").style.display = activeFLOOD ? "flex" : "none";
+	document.getElementById("floodSliderRow").style.display = activeFLOOD ? "flex" : "none";
+    handleSimulationSelection("FLOOD", activeFLOOD);
+  });
+
+  document.getElementById("floodTimeSelector").addEventListener("change", e => {
+    floodTime = e.target.value;
+	if (floodTime === "30") floodSlider.value = 30;
+	if (floodTime === "45") floodSlider.value = 45;
+	if (floodTime === "60") floodSlider.value = 60;
+
+	floodSliderValue.textContent = floodTime + " min";
+	
+	document.getElementById("filterOperator").addEventListener("change", () => {
+		const op = document.getElementById("filterOperator").value;
+		document.getElementById("filterValue2Row").style.display =
+			op === "between" ? "flex" : "none";
+	});
+
+	
+    updateSimulationVisibility();
+    updateComparisonMode();
+  });
+
+	/* -------------------------------------------------
+	   VALUE FILTER BUILD HELPER
+	-------------------------------------------------*/
+	function buildFilterExpression(op, v1, v2) {
+		if (op === ">")  return "(${Value} > " + v1 + ")";
+		if (op === ">=") return "(${Value} >= " + v1 + ")";
+		if (op === "<")  return "(${Value} < " + v1 + ")";
+		if (op === "<=") return "(${Value} <= " + v1 + ")";
+		if (op === "=")  return "(${Value} == " + v1 + ")";
+
+		if (op === "between") {
+			const min = Math.min(v1, v2);
+			const max = Math.max(v1, v2);
+			return "(${Value} >= " + min + " && ${Value} <= " + max + ")";
+		}
+
+		return null;
+	}
+
+
+	function applyValueFilter(op, v1, v2, type) {
+
+		valueFilterActive   = true;
+		valueFilterOperator = op;
+		valueFilterV1       = v1;
+		valueFilterV2       = op === "between" ? v2 : null;
+
+		const exp = buildFilterExpression(op, v1, v2);
+		filterTarget = type;
+
+		function applyStyle(ts, base) {
+			ts.style = new Cesium.Cesium3DTileStyle({
+				show: base + " && " + exp
+			});
+		}
+
+		if (type === "OA") {
+			applyStyle(windowsOA1Tileset, "(${window_id_1} !== undefined)");
+			applyStyle(windowsOA2Tileset, "(${window_id_2} !== undefined)");
+		}
+
+		if (type === "DSH") {
+			applyStyle(windowsDSH1Tileset, "(${_fonster_DSH_1} !== undefined)");
+			applyStyle(windowsDSH2Tileset, "(${_fonster_DSH_2} !== undefined)");
+		}
+
+		if (type === "NOISE") {
+			applyStyle(noise1Tileset, "(${_noise_id_1} !== undefined)");
+			applyStyle(noise2Tileset, "(${_noise_id_2} !== undefined)");
+		}
+
+		viewer.scene.requestRender();
+	}
+
+
+  /* -------------------------------------------------
+     BACK TO SINGLE BUTTON
+  -------------------------------------------------*/
+  document.getElementById("backToSingleBtn").addEventListener("click", () => {
+    compareModeSelector.value = "single";
+
+    simBefore = true;
+    simAfter  = false;
+    beforeCB.checked = true;
+    afterCB.checked  = false;
+	  
+    sliderEl.style.display = "none";
+    leftLabel.style.display = "none";
+    rightLabel.style.display = "none";
+
+    updateSimulationVisibility();
+    updateComparisonMode();
+    updateBackButtonVisibility();
+  });
+
+
+  /* -------------------------------------------------
+     COMPARISON MODE SELECT
+  -------------------------------------------------*/
+  compareModeSelector.addEventListener("change", () => {
+    const mode = compareModeSelector.value;
+
+    if (!mode) {
+      compareModeSelector.value = "single";
+    }
+
+    const effectiveMode = compareModeSelector.value;
+
+    if (effectiveMode === "scenario") {
+      simBefore = true;
+      simAfter  = true;
+      beforeCB.checked = true;
+      afterCB.checked  = true;
+    }
+
+    if (effectiveMode === "single") {
+      if (beforeCB.checked && afterCB.checked) {
+        simBefore = true;
+        simAfter  = false;
+        beforeCB.checked = true;
+        afterCB.checked  = false;
+      }
+    }
+
+    if (effectiveMode === "simulation") {
+      beforeCB.disabled = false;
+      afterCB.disabled  = false;
+
+      if (beforeCB.checked && afterCB.checked) {
+        simBefore = true;
+        simAfter  = false;
+        beforeCB.checked = true;
+        afterCB.checked  = false;
+      }
+    }
+
+    updateSimulationVisibility();
+    updateComparisonMode();
+    updateBackButtonVisibility();
+  });
+
+  function updateBackButtonVisibility() {
+    const mode = compareModeSelector.value || "single";
+    const btn  = document.getElementById("backToSingleBtn");
+    if (mode === "scenario" || mode === "simulation") {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  }
+
+  /* -------------------------------------------------
+     SPLIT LOGIC (Scenario / Simulation)
+  -------------------------------------------------*/
+  function updateComparisonMode() {
+    if (!existingTileset) return;
+
+    const rawMode = compareModeSelector.value;
+    const mode = rawMode || "single";
+
+    [
+      existingTileset, plannedTileset,
+      windowsOA1Tileset, windowsOA2Tileset,
+      windowsDSH1Tileset, windowsDSH2Tileset,
+      irrad1Tileset, irrad2Tileset,
+      noise1Tileset, noise2Tileset,
+	  wind1Tileset, wind2Tileset,
+      flood130Tileset, flood145Tileset, flood160Tileset,
+      flood230Tileset, flood245Tileset, flood260Tileset
+    ].forEach(ts => {
+      if (ts) ts.splitDirection = Cesium.SplitDirection.NONE;
+    });
+
+    sliderEl.style.display = "none";
+    leftLabel.style.display = "none";
+    rightLabel.style.display = "none";
+
+    // -------- SINGLE MODE --------
+    if (mode === "single") return;
+
+    // -------- SCENARIO MODE (Before vs After) --------
+    if (mode === "scenario") {
+
+      // BEFORE → left
+      if (windowsOA1Tileset)  windowsOA1Tileset.splitDirection  = Cesium.SplitDirection.LEFT;
+      if (windowsDSH1Tileset) windowsDSH1Tileset.splitDirection = Cesium.SplitDirection.LEFT;
+      if (irrad1Tileset)      irrad1Tileset.splitDirection      = Cesium.SplitDirection.LEFT;
+      if (noise1Tileset)      noise1Tileset.splitDirection      = Cesium.SplitDirection.LEFT;
+	  if (wind1Tileset)      wind1Tileset.splitDirection      = Cesium.SplitDirection.LEFT;
+
+      // AFTER → right
+      if (windowsOA2Tileset)  windowsOA2Tileset.splitDirection  = Cesium.SplitDirection.RIGHT;
+      if (windowsDSH2Tileset) windowsDSH2Tileset.splitDirection = Cesium.SplitDirection.RIGHT;
+      if (irrad2Tileset)      irrad2Tileset.splitDirection      = Cesium.SplitDirection.RIGHT;
+      if (noise2Tileset)      noise2Tileset.splitDirection      = Cesium.SplitDirection.RIGHT;
+	  if (wind2Tileset)      wind2Tileset.splitDirection      = Cesium.SplitDirection.RIGHT;
+
+      if (plannedTileset) plannedTileset.splitDirection = Cesium.SplitDirection.RIGHT;
+
+      // FLOOD SCENARIO: Before(left) vs After(right)
+      if (activeFLOOD) {
+        if (floodTime === "30") {
+          if (flood130Tileset) flood130Tileset.splitDirection = Cesium.SplitDirection.LEFT;
+          if (flood230Tileset) flood230Tileset.splitDirection = Cesium.SplitDirection.RIGHT;
+        }
+        if (floodTime === "45") {
+          if (flood145Tileset) flood145Tileset.splitDirection = Cesium.SplitDirection.LEFT;
+          if (flood245Tileset) flood245Tileset.splitDirection = Cesium.SplitDirection.RIGHT;
+        }
+        if (floodTime === "60") {
+          if (flood160Tileset) flood160Tileset.splitDirection = Cesium.SplitDirection.LEFT;
+          if (flood260Tileset) flood260Tileset.splitDirection = Cesium.SplitDirection.RIGHT;
+        }
+      }
+
+      leftLabel.textContent  = "Before";
+      rightLabel.textContent = "After";
+      leftLabel.style.display  = "block";
+      rightLabel.style.display = "block";
+      sliderEl.style.display   = "block";
+      setSplitPosition(0.5);
+
+      return;
+    }
+
+    // -------- SIMULATION MODE (OA vs DSH vs IRRAD vs NOISE vs FLOOD) --------
+    if (mode === "simulation") {
+
+      sliderEl.style.display = "block";
+
+      const sims = [];
+      if (activeOA)    sims.push("OA");
+      if (activeDSH)   sims.push("DSH");
+      if (activeIRRAD) sims.push("IRRAD");
+      if (activeNOISE) sims.push("NOISE");
+	  if (activeWIND) sims.push("WIND");
+      if (activeFLOOD) sims.push("FLOOD");
+
+      leftLabel.style.display  = "none";
+      rightLabel.style.display = "none";
+
+      if (sims.length === 2) {
+        const leftSim  = sims[0];
+        const rightSim = sims[1];
+
+        function assignSplit(sim, side) {
+          if (sim === "OA") {
+            if (windowsOA1Tileset) windowsOA1Tileset.splitDirection = side;
+            if (windowsOA2Tileset) windowsOA2Tileset.splitDirection = side;
+          }
+          if (sim === "DSH") {
+            if (windowsDSH1Tileset) windowsDSH1Tileset.splitDirection = side;
+            if (windowsDSH2Tileset) windowsDSH2Tileset.splitDirection = side;
+          }
+          if (sim === "IRRAD") {
+            if (irrad1Tileset) irrad1Tileset.splitDirection = side;
+            if (irrad2Tileset) irrad2Tileset.splitDirection = side;
+          }
+          if (sim === "NOISE") {
+            if (noise1Tileset) noise1Tileset.splitDirection = side;
+            if (noise2Tileset) noise2Tileset.splitDirection = side;
+          }
+		    if (sim === "WIND") {
+            if (wind1Tileset) wind1Tileset.splitDirection = side;
+            if (wind2Tileset) wind2Tileset.splitDirection = side;
+          }
+          if (sim === "FLOOD") {
+
+			// BEFORE SCENARIO FLOOD (130/145/160)
+			if (simBefore) {
+				if (floodTime === "30" && flood130Tileset) flood130Tileset.splitDirection = side;
+				if (floodTime === "45" && flood145Tileset) flood145Tileset.splitDirection = side;
+				if (floodTime === "60" && flood160Tileset) flood160Tileset.splitDirection = side;
+			}
+
+			// AFTER SCENARIO FLOOD (230/245/260)
+			if (simAfter) {
+				if (floodTime === "30" && flood230Tileset) flood230Tileset.splitDirection = side;
+				if (floodTime === "45" && flood245Tileset) flood245Tileset.splitDirection = side;
+				if (floodTime === "60" && flood260Tileset) flood260Tileset.splitDirection = side;
+			}
+		}
+}
+
+        assignSplit(leftSim,  Cesium.SplitDirection.LEFT);
+        assignSplit(rightSim, Cesium.SplitDirection.RIGHT);
+
+        leftLabel.textContent  = leftSim;
+        rightLabel.textContent = rightSim;
+
+        leftLabel.style.display  = "block";
+        rightLabel.style.display = "block";
+      }
+
+      setSplitPosition(0.5);
+    }
+  }
+
+
+  /* -------------------------------------------------
+     SPLIT SLIDER DRAGGING
+  -------------------------------------------------*/
+  let dragging = false;
+
+  sliderEl.addEventListener("pointerdown", e => {
+    dragging = true;
+    sliderEl.setPointerCapture(e.pointerId);
+  });
+
+  window.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const r = viewer.container.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    setSplitPosition(Math.min(1, Math.max(0, x)));
+  });
+
+  window.addEventListener("pointerup", e => {
+    if (!dragging) return;
+    dragging = false;
+    try { sliderEl.releasePointerCapture(e.pointerId); } catch {}
+  });
+
+  function setSplitPosition(pos) {
+    viewer.scene.splitPosition = pos;
+    sliderEl.style.left = `${pos * 100}%`;
+    leftLabel.style.left  = `${pos * 100}%`;
+	rightLabel.style.left = `${pos * 100}%`;
+    viewer.scene.requestRender();
+  }
+
+  
+  /* -------------------------------------------------
+     COLLAPSIBLES
+  -------------------------------------------------*/
+  document.querySelectorAll(".collapsible-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const content = header.nextElementSibling;
+      const icon = header.querySelector(".collapsible-icon");
+
+      const isHidden = content.style.display === "none";
+
+      content.style.display = isHidden ? "block" : "none";
+      icon.textContent = isHidden ? "−" : "+";
+    });
+  });
+
+  /* -------------------------------------------------
+     SAVE & SHARE BUTTONS
+  -------------------------------------------------*/
+	document.getElementById("saveBtn").addEventListener("click", () => {
+		const area = document.getElementById("captureArea");
+
+		html2canvas(area, {
+			useCORS: true,
+			allowTaint: true,
+			backgroundColor: null,
+			scale: 2  
+		}).then(canvas => {
+			canvas.toBlob(blob => {
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = "viewer_snapshot.png";
+				a.click();
+				URL.revokeObjectURL(url);
+			});
+		});
+	});
+	
+  document.getElementById("shareBtn").addEventListener("click", () => {
+    const c = viewer.camera;
+    const carto = Cesium.Ellipsoid.WGS84.cartesianToCartographic(c.position);
+
+    const params = new URLSearchParams({
+      lon: Cesium.Math.toDegrees(carto.longitude).toFixed(6),
+      lat: Cesium.Math.toDegrees(carto.latitude).toFixed(6),
+      h:   carto.height.toFixed(2),
+      hd:  c.heading.toFixed(6),
+      p:   c.pitch.toFixed(6),
+      r:   c.roll.toFixed(6),
+
+      mode: compareModeSelector.value || "single",
+      before: beforeCB.checked ? 1 : 0,
+      after: afterCB.checked ? 1 : 0,
+      oa: activeOA ? 1 : 0,
+      dsh: activeDSH ? 1 : 0,
+      irrad: activeIRRAD ? 1 : 0
+    });
+		
+    const shareURL = `${location.origin}${location.pathname}?${params.toString()}`;
+
+    navigator.clipboard.writeText(shareURL).then(() => {
+      alert("Shareable link copied to clipboard!");
+    });
+  });
+  
+  const floodSlider = document.getElementById("floodSlider");
+	const floodSliderValue = document.getElementById("floodSliderValue");
+
+	floodSlider.addEventListener("input", () => {
+	  const val = Number(floodSlider.value);
+
+	  floodSliderValue.textContent = val + " min";
+
+	  let chosen;
+	  if      (val < 38) chosen = "30";
+	  else if (val < 53) chosen = "45";
+	  else               chosen = "60";
+
+	  const dropdown = document.getElementById("floodTimeSelector");
+	  if (dropdown.value !== chosen) dropdown.value = chosen;
+
+	  floodTime = chosen;
+	  updateSimulationVisibility();
+	  updateComparisonMode();
+	});
+	
+	viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+		const picked = viewer.scene.pick(movement.position);
+		if (!picked || !picked.getProperty) {
+			hideInfoBox();
+			return;
+		}
+
+		const feature = picked;
+
+		const isSimulation =
+			feature.getProperty("Sim_name") !== undefined &&
+			feature.getProperty("sim_scenario") !== undefined;
+
+		if (isSimulation) {
+			showSimulationInfoBox(feature);
+			return;
+		}
+
+		const name = feature.getProperty("gml_name") ?? "—";
+		const year = feature.getProperty("citygml_year_of_construction") ?? "—";
+		const func = feature.getProperty("Function") ?? "—";
+
+		showBuildingInfoBox({ name, year, function: func });
+
+	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+	function hideInfoBox() {
+	  document.getElementById("infoBox").style.display = "none";
+	}
+	
+	function showInfoBox(data) {
+	  const box = document.getElementById("infoBox");
+	  const content = document.getElementById("infoBoxContent");
+
+	  content.innerHTML = `
+		<table class="info-table">
+		  <tr><td class="label">Building ID</td><td class="value">${data.name}</td></tr>
+		  <tr><td class="label">Year Built</td><td class="value">${data.year}</td></tr>
+		  <tr><td class="label">Function</td><td class="value">${data.function}</td></tr>
+		</table>
+	  `;
+
+	  box.style.display = "block";
+	}
+	
+	
+	document.getElementById("infoBoxClose").addEventListener("click", () => {
+	  hideInfoBox();
+	});
+	
+	function showBuildingInfoBox(data) {
+    const box = document.getElementById("infoBox");
+    const content = document.getElementById("infoBoxContent");
+
+    content.innerHTML = `
+      <table class="info-table">
+        <tr><td class="label">Building ID</td><td class="value">${data.name}</td></tr>
+        <tr><td class="label">Year Built</td><td class="value">${data.year}</td></tr>
+        <tr><td class="label">Function</td><td class="value">${data.function}</td></tr>
+      </table>
+    `;
+
+    box.style.display = "block";
+}
+
+	function showSimulationInfoBox(feature) {
+		const box = document.getElementById("infoBox");
+		const content = document.getElementById("infoBoxContent");
+
+		box.classList.add("infoBox-basic");
+		box.classList.remove("infoBox-large");
+
+		const Sim_name        = addSpaces(feature.getProperty("Sim_name"));
+	const sim_scenario    = addSpaces(feature.getProperty("sim_scenario"));
+	const Value           = addSpaces(feature.getProperty("Value"));
+	const Unit            = addSpaces(feature.getProperty("Unit"));
+
+		
+		content.innerHTML = `
+		  <table class="info-table">
+			<tr><td class="label">Simulation</td><td class="value">${Sim_name}</td></tr>
+			<tr><td class="label">Scenario</td><td class="value">${sim_scenario}</td></tr>
+			<tr><td class="label">Value</td><td class="value">${Value}</td></tr>
+			<tr><td class="label">Unit</td><td class="value">${Unit}</td></tr>
+		  </table>
+			
+		  <button id="showFullMetaBtn" class="meta-btn">Complete metadata</button>
+		`;
+
+		box.style.display = "block";
+
+		document.getElementById("showFullMetaBtn").onclick = () => {
+			showFullMetadata(feature);
+		};
+	}
+
+	function showFullMetadata(feature) {
+		const box = document.getElementById("infoBox");
+		const content = document.getElementById("infoBoxContent");
+
+		box.classList.add("infoBox-large");
+		box.classList.remove("infoBox-basic");
+
+		const basicFields = [
+			["Sim_name", "Simulation"],
+			["sim_scenario", "Scenario"],
+			["Value", "Value"],
+			["Unit", "Unit"],
+		];
+
+		const fullFields = [
+			["publicationYear", "Publication Year"],
+			["dateCoverage", "Date Coverage"],
+			["Publisher", "Publisher"],
+			["Publisher_id", "Publisher ID"],
+			["Creator", "Creator"],
+			["Creator_id", "Creator ID"],
+			["Affiliation", "Affiliation"],
+			["Affiliation_id", "Affiliation ID"],
+			["Description_abs", "Abstract"],
+			["Description_tech", "Technical Description"],
+			["Description_met", "Methodology"],
+			["Language", "Language"],
+		];
+
+		let rows = "";
+
+		[...basicFields, ...fullFields].forEach(([key, label]) => {
+			const val = addSpaces(feature.getProperty(key) ?? "—");
+			rows += `
+			<tr>
+				<td class="label">${label}</td>
+				<td class="value long-text">${val}</td>
+			</tr>`;
+		});
+
+		content.innerHTML = `
+		  <table class="info-table">
+			${rows}
+		  </table>
+
+		  <button id="backBasicMetaBtn" class="meta-btn">Back</button>
+		`;
+
+		document.getElementById("backBasicMetaBtn").onclick = () => {
+			showSimulationInfoBox(feature);
+		};
+	}
+	
+	function addSpaces(text) {
+		if (typeof text !== "string") return text;
+
+		// 1) replace underscores with spaces
+		let t = text.replace(/_/g, " ");
+
+		// 2) add spaces between camelCase words
+		t = t.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+		// 3) optional: fix this specific value nicely
+		if (t.toLowerCase() === "malmö municipality") {
+			return "Malmö Municipality"; 
+		}
+
+		return t;
+	}
+	
+	document.getElementById("applyFilterBtn").addEventListener("click", () => {
+		const op = document.getElementById("filterOperator").value;
+		const v1 = parseFloat(document.getElementById("filterValue1").value);
+		const v2 = parseFloat(document.getElementById("filterValue2").value);
+
+		if (!filterTarget) return;
+
+		applyValueFilter(op, v1, v2, filterTarget);
+
+		viewer.scene.requestRender();
+	});
+
+
+	document.getElementById("clearFilterBtn").addEventListener("click", () => {
+		updateStyles();   // your existing function restores everything
+	});
+
+
+  const valueFilterPanel = document.getElementById("valueFilterPanel");
+  const valueFilterPanelClose = document.getElementById("valueFilterPanelClose");
+
+  valueFilterPanelClose.addEventListener("click", () => {
+    filterTarget = null;
+	valueFilterPanel.style.display = "none";
+
+  });
+	  
+
+  document.getElementById("filterOperator").addEventListener("change", () => {
+    const op = document.getElementById("filterOperator").value;
+    document.getElementById("filterValue2Row").style.display =
+      op === "between" ? "flex" : "none";
+  });
+
+	document.getElementById("clearFilterBtn").addEventListener("click", () => {
+		valueFilterActive = false;
+		filterTarget = null;
+
+		// Reset values so UI is blank
+		valueFilterOperator = null;
+		valueFilterV1 = null;
+		valueFilterV2 = null;
+
+		// Fully restore styles (no filtering)
+		updateStyles();
+
+		// Hide panel
+		document.getElementById("valueFilterPanel").style.display = "none";
+
+		viewer.scene.requestRender();
+	});
+
+
+	const zoomAmount = 50;
+
+	// Zoom In
+	document.getElementById("zoomInBtn").addEventListener("click", () => {
+		viewer.camera.moveForward(zoomAmount);
+		viewer.scene.requestRender();
+	});
+
+	// Zoom Out
+	document.getElementById("zoomOutBtn").addEventListener("click", () => {
+		viewer.camera.moveBackward(zoomAmount);
+		viewer.scene.requestRender();
+	});
+	
+	function updateFilterButtonState() {
+	  toggleFilterIcon("filterOA", document.getElementById("simOA").checked);
+	  toggleFilterIcon("filterDSH", document.getElementById("simDSH").checked);
+	  toggleFilterIcon("filterNOISE", document.getElementById("simNOISE").checked);
+	}
+
+	function toggleFilterIcon(id, enabled) {
+	  const icon = document.getElementById(id);
+	  if (enabled) {
+		icon.classList.remove("disabled");
+	  } else {
+		icon.classList.add("disabled");
+	  }
+	}
+
+
+	const valueFilterPanelEl = document.getElementById("valueFilterPanel");
+	const valueFilterTitleEl = document.getElementById("valueFilterTitle");
+	const filterOperatorEl   = document.getElementById("filterOperator");
+	const filterValue1El     = document.getElementById("filterValue1");
+	const filterValue2El     = document.getElementById("filterValue2");
+	const filterValue2RowEl  = document.getElementById("filterValue2Row");
+
+
+	function openFilter(sim) {
+
+		console.log("[filter] switching panel to:", sim);
+
+
+		filterTarget = sim;
+
+		valueFilterTitleEl.textContent = "Filter " + sim + " Values";
+
+		valueFilterPanelEl.style.display = "block";
+
+		filterValue2RowEl.style.display =
+			(filterOperatorEl.value === "between") ? "flex" : "none";
+
+		try { filterValue1El.focus(); } catch (e) {}
+	}
+
+	function addFilterIconListener(id, sim) {
+		const el = document.getElementById(id);
+		el.addEventListener("click", () => {
+			if (el.classList.contains("disabled")) return;
+			openFilter(sim);
+		});
+	}
+
+	addFilterIconListener("filterOA", "OA");
+	addFilterIconListener("filterDSH", "DSH");
+	addFilterIconListener("filterNOISE", "NOISE");
+
+	filterOperatorEl.addEventListener("change", () => {
+		filterValue2RowEl.style.display =
+			(filterOperatorEl.value === "between") ? "flex" : "none";
+	});
+
+	document.getElementById("applyFilterBtn").addEventListener("click", () => {
+		if (!filterTarget) {
+			alert("No simulation selected.");
+			return;
+		}
+
+		const op = filterOperatorEl.value;
+		const v1 = parseFloat(filterValue1El.value);
+		const v2 = parseFloat(filterValue2El.value);
+
+		if (isNaN(v1)) {
+			alert("Enter a valid number.");
+			return;
+		}
+
+		console.log("[filter] apply:", filterTarget, op, v1, v2);
+
+		applyValueFilter(op, v1, v2, filterTarget);
+
+		viewer.scene.requestRender();
+	});
+
+	valueFilterPanelClose.addEventListener("click", () => {
+		console.log("[filter] panel closed");
+		filterTarget = null;
+		valueFilterPanelEl.style.display = "none";
+	});
+
+	document.getElementById("clearFilterBtn").addEventListener("click", () => {
+
+		console.log("[filter] clearing all filters");
+
+		valueFilterActive   = false;
+		valueFilterOperator = null;
+		valueFilterV1       = null;
+		valueFilterV2       = null;
+		filterTarget        = null;
+
+		filterOperatorEl.value = ">";
+		filterValue1El.value   = 0;
+		filterValue2El.value   = 10;
+		filterValue2RowEl.style.display = "none";
+
+		updateStyles();
+
+		valueFilterPanelEl.style.display = "none";
+
+		viewer.scene.requestRender();
+	});
+
+	function closeFilterIfTargetUnchecked() {
+		if (!filterTarget) return;
+
+		const isOA    = filterTarget === "OA"    && !document.getElementById("simOA").checked;
+		const isDSH   = filterTarget === "DSH"   && !document.getElementById("simDSH").checked;
+		const isNOISE = filterTarget === "NOISE" && !document.getElementById("simNOISE").checked;
+
+		if (isOA || isDSH || isNOISE) {
+
+			valueFilterPanelEl.style.display = "none";
+
+			filterTarget = null;
+
+			console.log("[filter] closed because simulation was unchecked");
+		}
+	}
+
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,696 @@
+html, body, #cesiumContainer {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   MAIN CONTROLS PANEL
+===================================================== */
+#controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 10;
+  font-family: sans-serif;
+  width: 200px;
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.layer-control {
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 13px;
+  margin-top: 4px;
+  outline: none;
+}
+
+/* =====================================================
+   SLIDER SPLIT
+===================================================== */
+#slider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: rgba(255,255,255,0.6);
+  border-left: 1px solid #888;
+  border-right: 1px solid #888;
+  z-index: 4;
+  cursor: ew-resize;
+  display: none;
+  transform: translateX(-50%);
+}
+
+#movingLabels {
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.moving-label {
+  position: absolute;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  display: none;
+  transform: translateY(-50%);
+  font-family: sans-serif;
+}
+#leftLabel {
+    transform: translate(calc(-100% - 20px), -50%);
+}
+
+#rightLabel {
+    transform: translate(20px, -50%);
+}
+
+
+/* =====================================================
+   LAYER PANEL & CHECKBOXES
+===================================================== */
+.layer-section-title {
+  font-weight: bold;
+  margin: 8px 0 4px 0;
+  font-size: 14px;
+}
+
+.layer-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 2px 0;
+  gap: 8px;
+  width: 100%;
+  line-height: 1.25;
+}
+
+.layer-row input[type="checkbox"] {
+  transform: scale(0.9);
+  margin-right: 6px;
+}
+
+.mini-slider {
+  -webkit-appearance: none;
+  width: 70px;
+  height: 4px;
+  border-radius: 2px;
+  background: #ccc;
+  outline: none;
+  margin-left: 10px;
+}
+
+.mini-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  background: #666;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* =====================================================
+   LEGENDS
+===================================================== */
+.legend-box {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 15px;
+  border-radius: 10px;
+  width: 180px;
+  font-family: sans-serif;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  position: relative;
+  pointer-events: auto;
+}
+
+#legend-container {
+  position: absolute;
+  bottom: 40px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.legend-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+/* =====================================================
+   LEGEND COLOR EXAMPLES
+===================================================== */
+/*
+These are EXAMPLE color scales for different simulation types.
+
+/* EXAMPLE: OBSTRUCTION ANGLE */
+.legend-gradient-oa {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right,
+    rgb(0,128,0),
+    rgb(128,179,26),
+    rgb(255,255,0),
+    rgb(255,179,0),
+    rgb(255,51,0)
+  );
+}
+
+/* EXAMPLE: DIRECT SUNLIGHT HOURS */
+.legend-gradient-dsh {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to left,
+    rgb(0,128,0),
+    rgb(128,179,26),
+    rgb(255,255,0),
+    rgb(255,179,0),
+    rgb(255,51,0)
+  );
+}
+
+/* EXAMPLE: IRRADIATION */
+.legend-gradient-irrad {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right,
+    #2C7BB6,
+	#ABD9E9,
+	#FFFFBF,
+	#FDAE61,
+	#D7191C
+  );
+}
+
+/* EXAMPLE: NOISE */
+.legend-gradient-noise {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right,
+	  rgb(0,128,0),
+	  rgb(255,255,0),
+	  rgb(255,170,0),
+	  rgb(255,0,0),
+	  rgb(153,0,0),
+	  rgb(85,0,0)
+  );
+ }
+
+/* EXAMPLE: WIND */
+.legend-gradient-wind {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right,
+    #C8DDC0,
+    #FFFDE0,
+    #FFEEC2,
+    #FDAE61,
+    #D7191C
+  );
+}
+
+/* EXAMPLE: FLOOD */
+.legend-gradient-flood {
+  height: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: linear-gradient(to right,
+    #e3f2fd,
+    #64b5f6,
+    #1e88e5,
+    #1565c0,
+    #0d47a1
+  );
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+}
+
+.legend-note {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+  color: #444;
+  opacity: 0.9;
+}
+
+
+/* =====================================================
+   COLLAPSIBLE SECTIONS
+===================================================== */
+.collapsible-container {
+  width: 100%;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.collapsible-header {
+  background: #f2f2f2;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapsible-icon {
+  font-size: 13px;
+  transition: transform 0.25s ease;
+}
+
+.collapsible-content {
+  padding: 6px 10px;
+  overflow: hidden;
+  display: block;
+}
+
+.back-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none;
+}
+
+.back-btn:hover {
+  background: #2b74b6;
+}
+
+/* =====================================================
+   CESIUM TOOLBAR BUTTONS
+===================================================== */
+.cesium-viewer-toolbar {
+  right: 160px;
+}
+
+#extraButtons {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 1px;
+  z-index: 1000;
+}
+
+#extraButtons .cesium-button {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#extraButtons .cesium-button svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* =====================================================
+   INFOBOX (MAIN)
+===================================================== */
+#infoBox {
+  position: absolute;
+  top: 50px;
+  right: 5px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  font-family: sans-serif;
+  font-size: 13px;
+  display: none;
+  z-index: 30;
+}
+
+/* Header */
+#infoBoxHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  font-weight: bold;
+  background: #f2f2f2;
+  border-bottom: 1px solid #ddd;
+  border-radius: 10px 10px 0 0;
+}
+
+#infoBoxClose {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #666;
+}
+
+/* Size Modes */
+#infoBox.infoBox-basic {
+  width: 240px;
+}
+
+#infoBox.infoBox-large {
+  width: 500px;
+  max-height: 560px;
+  overflow-y: auto;
+  padding-bottom: 10px;
+}
+
+/* =====================================================
+   INFOBOX TABLE
+===================================================== */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.info-table tr:last-child td {
+  border-bottom: none;
+}
+
+.info-table td.label {
+  width: 110px;
+  white-space: nowrap;
+  font-weight: bold;
+  color: #333;
+}
+
+.info-table td.value {
+  color: #444;
+  line-height: 1.35;
+}
+
+/* Long text fields */
+.long-text {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* =====================================================
+   METADATA BUTTON
+===================================================== */
+.meta-btn {
+    width: calc(100% - 24px);
+    margin: 10px auto 8px auto;
+    padding: 6px 0;
+    background: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+}
+.meta-btn:hover {
+    background: #2b74b6;
+}
+
+#captureArea {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+}
+
+/* -------------------------------
+   VALUE FILTER PANEL 
+--------------------------------*/
+#valueFilterPanel {
+  position: absolute;
+  top: 10px;
+  left: 240px;
+  z-index: 35;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: 140px;
+  display: none;
+
+  
+  box-shadow: 0 4px 14px rgba(0,0,0,0.20);
+
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+}
+
+/* Header */
+#valueFilterPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 4px;
+}
+
+#valueFilterPanelClose {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  color: #777;
+  transition: 0.15s;
+}
+#valueFilterPanelClose:hover {
+  color: #333;
+}
+
+/* Rows */
+.value-filter-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.value-filter-row label {
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: #444;
+}
+
+/* Dropdowns */
+#valueFilterPanel .dropdown {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.15s border-color;
+}
+#valueFilterPanel .dropdown:focus {
+  border-color: #4299e1;
+}
+
+/* Number input */
+#valueFilterPanel input[type="number"] {
+  width: 180;
+  padding: 4px 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 12px;
+  transition: 0.15s border-color;
+}
+#valueFilterPanel input[type="number"]:focus {
+  border-color: #4299e1;
+}
+
+/* Buttons */
+#applyFilterBtn {
+  width: 100%;
+  background: #1C7A89;
+  border-radius: 6px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+#applyFilterBtn:hover {
+  background: #186A77;
+}
+
+#clearFilterBtn {
+  width: 100%;
+  background: #A0A7AD;
+  border-radius: 6px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+#clearFilterBtn:hover {
+  background: #8C949B;
+}
+
+/* Disable state for main button */
+.meta-btn.disabled {
+  background: #C3C9CE;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Primary action button -------------------------------------------------- */
+.meta-btn, 
+#applyFilterBtn {
+    background: #1C7A89;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 0;
+    font-weight: 600;
+    transition: background 0.15s ease-in-out;
+}
+
+.meta-btn:hover,
+#applyFilterBtn:hover {
+    background: #166873;
+}
+
+/* Secondary buttons ---------------------------------- */
+#clearFilterBtn,
+#backToSingleBtn {
+    background: #A7B4BC;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 0;
+    font-weight: 600;
+    transition: background 0.15s ease-in-out;
+    width: 100%; 
+}
+
+#clearFilterBtn:hover,
+#backToSingleBtn:hover {
+    background: #8F9CA3;
+}
+
+/* Open Filter Panel button */
+#openValueFilterBtn {
+    background: #1C7A89;
+    color: white;
+}
+
+#openValueFilterBtn:hover {
+    background: #166873;
+}
+
+
+#extraButtons .cesium-button:hover {
+    background: #166873;
+}
+
+.filter-icon {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.filter-icon.disabled img.filter-img {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.layer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+}
+
+#valueFilterPanel input[type="number"]::-webkit-inner-spin-button,
+#valueFilterPanel input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#valueFilterPanel input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+#valueFilterPanel .dropdown,
+#valueFilterPanel input[type="number"],
+#valueFilterPanel input[type="text"],
+#applyFilterBtn,
+#clearFilterBtn {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+#valueFilterPanel {
+  padding: 8px;
+}
+
+#valueFilterPanel .value-filter-row label {
+  font-size: 12px;
+}
+
+#valueFilterPanel input,
+#valueFilterPanel select {
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.filter-icon svg {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filter-icon.disabled svg {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.filter-icon.disabled {
+  cursor: not-allowed;
+}
