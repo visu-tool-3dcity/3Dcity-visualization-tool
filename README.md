@@ -48,6 +48,21 @@ It is designed as a **template**, meaning:
 - 3D tiles streamed via Cesium ion
 
 ---
+## Recommendation - Data consistency
+
+This tool assumes that all simulation datasets are based on a common 3D city model.
+
+To ensure accurate visualization and comparison, it is recommended to:
+
+- Use a standardized 3D city model
+- Perform all simulations using the same geometric reference
+- Maintain consistent identifiers or spatial relationships between geometry and simulation outputs
+
+This approach ensures that simulation results are correctly mapped to their corresponding 3D elements, enabling reliable analysis and comparison between different simulations and scenarios.
+
+In addition, using a standardized 3D city model supports scalability and future reuse of the tool. Once a consistent model is established, new simulations, scenarios, or study areas can be integrated more easily without restructuring the entire workflow. This makes the tool adaptable to different projects and long-term urban analysis processes.
+
+---
 
 ## Use cases
 - Urban planning analysis
