@@ -2,7 +2,16 @@
 Web-based tool for visualizing environmental simulations in semantic 3D city models
 
 ## Overview
-This is a **web-based visualization tool** for exploring environmental simulations (e.g. sunlight, noise, flood) in 3D city models.
+This project presents a web-based visualization tool for exploring and analyzing environmental simulation results (e.g., daylight, noise, wind, flood) integrated with semantic 3D city models.
+
+The tool is designed to support urban planners and decision-makers by enabling:
+
+- Interactive exploration of simulation results in 3D
+- Comparison between scenarios and simulations
+- Identification of critical areas
+- Clear communication of complex environmental data
+
+It is built using CesiumJS and 3D Tiles for efficient streaming of large geospatial datasets.
 
 It is designed as a **template/toolkit**, meaning:
 - No data is included
@@ -10,19 +19,8 @@ It is designed as a **template/toolkit**, meaning:
 
 ---
 
-## Features
-- 3D visualization using CesiumJS
-- Support for multiple simulation types
-- Scenario comparison (before/after)
-- Interactive exploration
+## Input data
+- 3D city model
+- 3D tile sets for each environmental simulation
 
 ---
-
-
----
-
-## Getting Started
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/your-username/your-repo-name.git
