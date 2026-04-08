@@ -13,7 +13,7 @@ The tool is designed to support urban planners and decision-makers by enabling:
 
 It is built using CesiumJS and 3D Tiles for efficient streaming of large geospatial datasets.
 
-It is designed as a **template**, meaning:
+It is designed as a template, meaning:
 - No data is included
 - Users can plug in their own datasets
 
@@ -22,7 +22,8 @@ It is designed as a **template**, meaning:
 ## Main features
 - Layer-based visualization
 - Support multiple environmental simulations
-- Comparison functionalities
+- Scenarios comparison
+- Simulation type comparison
 - Filtering critical areas
 - Legends and thresholds
 - Metadata popup (expandable for complete set of information)
