@@ -34,16 +34,16 @@ It is designed as a **template**, meaning:
 - 3D city model (CityGML - LOD2/LOD3)
 - Simulation outputs (CSV, raster, point data)
 
-## Database key processes
+### Database key processes
 - link simulation output to geometry (windows, walls, terrain)
 - assign appearances (colors, textures)
 - PostgreSQL + PostGIS in 3DCityDB
 
-## Data processing
+### Data processing
 - ETL performed using FME
 - Convert CityGML into 3D Tiles for each scenario and simulation type
 
-## Visualization 
+### Visualization 
 - CesiumJS
 - 3D tiles streamed via Cesium ion
 
