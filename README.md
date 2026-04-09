@@ -24,11 +24,11 @@ It is designed as a template, meaning:
 ## Main features
 - Layer-based visualization
 - Support multiple environmental simulations
-- Scenarios comparison
+- Side-by-side scenario comparison (before and after)
   <p>
     <img src="img/tool2.jpg">
   </p>
-- Simulation type comparison
+- Side-by-side simulation comparison (example: wind and flood)
   <p>
     <img src="img/tool3.png">
   </p>
