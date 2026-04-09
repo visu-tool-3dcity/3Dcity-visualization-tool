@@ -25,25 +25,25 @@ It is designed as a template, meaning:
 - Layer-based visualization
 - Support multiple environmental simulations
 - Scenarios comparison
-<p>
-  <img src="img/tool2.jpg">
-</p>
+  <p>
+    <img src="img/tool2.jpg">
+  </p>
 - Simulation type comparison
-<p>
-  <img src="img/tool3.png">
-</p>
+  <p>
+    <img src="img/tool3.png">
+  </p>
 - Filtering critical areas
-<p>
-  <img src="img/tool4.jpg">
-</p>
+  <p>
+    <img src="img/tool4.jpg">
+  </p>
 - Legends and thresholds
-<p>
-  <img src="img/tool5.png" width="500">
-</p>
+  <p>
+    <img src="img/tool5.png" width="500">
+  </p>
 - Metadata popup (expandable for complete set of information)
-<p>
-  <img src="img/tool6.jpg" width="500">
-</p>
+  <p>
+    <img src="img/tool6.jpg" width="500">
+  </p>
 
 ---
 ## System Architecture 
@@ -51,9 +51,9 @@ It is designed as a template, meaning:
 ### Input data
 - 3D city model (CityGML - LOD2/LOD3)
 - Simulation outputs (CSV, raster, point data)
-<p>
-  <img src="img/too7.jpg" width="500">
-</p>
+  <p>
+    <img src="img/tool7.jpg" width="500">
+  </p>
 
 ### Database key processes
 - link simulation output to geometry (windows, walls, terrain)
