@@ -25,10 +25,15 @@ It is designed as a template, meaning:
 - Layer-based visualization
 - Support multiple environmental simulations
 - Scenarios comparison
+![Scenario Comparison](img/tool2.jpg)
 - Simulation type comparison
+![Simulation Comparison](img/tool3.png)
 - Filtering critical areas
+![Filtering](img/tool4.jpg)
 - Legends and thresholds
+![Legends](img/tool5.png)
 - Metadata popup (expandable for complete set of information)
+![Metadata](img/tool6.jpg)
 
 ---
 ## System Architecture 
