@@ -25,7 +25,9 @@ It is designed as a template, meaning:
 - Layer-based visualization
 - Support multiple environmental simulations
 - Scenarios comparison
-![Scenario Comparison](img/tool2.jpg)
+<p align="center">
+  <img src="img/tool1.png" width="500">
+</p>
 - Simulation type comparison
 ![Simulation Comparison](img/tool3.png)
 - Filtering critical areas
