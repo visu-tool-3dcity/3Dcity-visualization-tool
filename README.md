@@ -4,6 +4,8 @@ Web-based tool for visualizing environmental simulations in semantic 3D city mod
 ## Overview
 This project presents a web-based visualization tool for exploring and analyzing environmental simulation results (e.g., daylight, noise, wind, flood) integrated with semantic 3D city models.
 
+![Overview](img/tool1.png)
+
 The tool is designed to support urban planners and decision-makers by enabling:
 
 - Interactive exploration of simulation results in 3D
