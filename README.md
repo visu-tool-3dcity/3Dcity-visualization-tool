@@ -23,24 +23,35 @@ It is designed as a template, meaning:
 
 ## Main features
 - Layer-based visualization
+  <br> 
 - Support multiple environmental simulations
+  <br> 
 - Side-by-side scenario comparison (before and after)
+  <br> 
   <p>
     <img src="img/tool2.jpg">
   </p>
+  <br> 
 - Side-by-side simulation comparison (example: wind and flood)
+  <br> 
   <p>
     <img src="img/tool3.png">
   </p>
+  <br> 
 - Filtering critical areas
+  <br> 
   <p>
     <img src="img/tool4.jpg">
   </p>
+  <br> 
 - Legends and thresholds
+  <br> 
   <p>
     <img src="img/tool5.png" width="500">
   </p>
+  <br> 
 - Metadata popup (expandable for complete set of information)
+  <br> 
   <p>
     <img src="img/tool6.jpg" width="500">
   </p>
@@ -96,11 +107,11 @@ In addition, using a standardized 3D city model supports scalability and future 
 - Requires technical setup
 - Not a legal document tool
 - Performance depends on dataset size and tiling
-- Limited photorealism (phocus on analysis)
+- Limited photorealism (focus on analysis)
 
 ---
 
-## Future Improvments
+## Future Improvements
 - Dashboard with aggregated statistics
 - Export to Google Earth
 - Integration with urban planning workflows
